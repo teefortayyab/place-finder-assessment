@@ -13,14 +13,24 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.wildswim.ios",
+      "config": {
+        "googleMapsApiKey":  "AIzaSyAcDRhLAxI5fmgvfE9orwf8F7ocmQUPX5E"
+        }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.placefinderassessment",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDlU77-tFi7P6AEK8M77IkPkiIHh3kGa4U"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
