@@ -1,19 +1,29 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 
 const SearchHistory = ({ history, onSelect }) => {
+  const memoizedHistory = useMemo(() => history, [history]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Search History</Text>
       <FlatList
-        data={history}
+        data={memoizedHistory}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => onSelect(item)} style={styles.item}>
-            <Text>{item.name}</Text>
+            <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.address}>{item.address}</Text>
           </TouchableOpacity>
         )}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       />
     </View>
   );
@@ -21,23 +31,29 @@ const SearchHistory = ({ history, onSelect }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   title: {
     fontWeight: 'bold',
     fontSize: 16,
-    marginBottom: 8,
+    marginVertical: 10,
   },
   item: {
-    marginBottom: 10,
-    backgroundColor: '#eee',
-    padding: 10,
+    marginBottom: 5,
+    backgroundColor: '#FFFFFF',
+    padding: 12,
     borderRadius: 8,
+  },
+  name: {
+    fontWeight: '600',
   },
   address: {
     fontSize: 12,
-    color: '#444',
-  },
+    color: '#666',
+    marginTop: 2,
+  }
 });
 
 export default SearchHistory;

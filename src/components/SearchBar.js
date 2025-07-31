@@ -4,9 +4,9 @@ import {
   Text,
   TextInput,
   FlatList,
-  Text as RNText,
   TouchableOpacity,
   StyleSheet,
+  Keyboard,
 } from 'react-native';
 import { useGoogleAutocomplete } from '@appandflow/react-native-google-autocomplete';
 import { GOOGLE_MAPS_API_KEY } from '@env';
@@ -23,10 +23,11 @@ const SearchBar = ({ onPlaceSelect }) => {
   } = useGoogleAutocomplete(GOOGLE_MAPS_API_KEY, {
     language: 'en',
     debounce: 300,
-    queryTypes: ["all"],
   });
 
   const handleSelectPlace = async (place) => {
+    Keyboard.dismiss();
+
     const details = await searchDetails(place.place_id);
     if (!details?.geometry?.location) return;
 
@@ -42,10 +43,11 @@ const SearchBar = ({ onPlaceSelect }) => {
     await storeHistory(selectedPlace);
     onPlaceSelect(selectedPlace);
     clearSearch();
+    setTerm('');
   };
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
           value={term}
@@ -55,103 +57,108 @@ const SearchBar = ({ onPlaceSelect }) => {
           placeholderTextColor="#888"
         />
         {term.length > 0 && (
-          <TouchableOpacity onPress={()=> {
-            clearSearch();
-            setTerm("");
-          }} style={styles.clearButton}>
-            <RNText style={styles.clearText}>✕</RNText>
+          <TouchableOpacity
+            onPress={() => {
+              clearSearch();
+              setTerm('');
+              Keyboard.dismiss();
+            }}
+            style={styles.clearButton}
+          >
+            <Text style={styles.clearText}>✕</Text>
           </TouchableOpacity>
         )}
       </View>
 
-      {isSearching && <RNText style={styles.loading}>Searching...</RNText>}
-
-      {locationResults.length === 0 && term.length > 0 && !isSearching && (
-        <RNText style={styles.noResults}>No results found</RNText>
+      {term.length > 0 && (
+        <View style={styles.dropdown}>
+          {isSearching && <Text style={styles.loading}>Searching...</Text>}
+          <FlatList
+            data={locationResults.slice(0, 5)}
+            keyExtractor={(item) => item.place_id}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => handleSelectPlace(item)}
+                style={styles.item}
+              >
+                <Text style={styles.name}>
+                  {item.structured_formatting.main_text}
+                </Text>
+                <Text style={styles.secondary}>
+                  {item.structured_formatting.secondary_text}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
       )}
-
-      <FlatList
-        data={locationResults.slice(0, 5)}
-        keyExtractor={(item) => item.place_id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => handleSelectPlace(item)}
-            style={styles.item}
-            activeOpacity={0.7}
-          >
-            <RNText style={styles.name}>
-              {item.structured_formatting.main_text}
-            </RNText>
-            <RNText style={styles.secondary}>
-              {item.structured_formatting.secondary_text}
-            </RNText>
-          </TouchableOpacity>
-        )}
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
+  container: {
+    zIndex: 10,
+    paddingHorizontal: 10,
     backgroundColor: '#fff',
-    paddingBottom: 10,
+    borderRadius: 8,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 12,
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: '#fdfdfd',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingHorizontal: 10,
   },
   input: {
     flex: 1,
     height: 48,
-    paddingHorizontal: 14,
     fontSize: 16,
     color: '#333',
   },
   clearButton: {
-    paddingHorizontal: 12,
+    paddingLeft: 10,
   },
   clearText: {
     fontSize: 18,
     color: '#888',
   },
+  dropdown: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginTop: 6,
+    paddingVertical: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    maxHeight: 220,
+  },
   item: {
-    marginHorizontal: 12,
-    marginVertical: 2,
-    padding: 14,
-    backgroundColor: '#f3f3f3',
-    borderRadius: 10,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   name: {
     fontWeight: '600',
     fontSize: 15,
-    color: '#222',
   },
   secondary: {
     fontSize: 12,
     color: '#666',
-    marginTop: 2,
   },
   loading: {
-    marginLeft: 14,
-    color: '#888',
+    marginLeft: 10,
     fontStyle: 'italic',
-  },
-  noResults: {
-    marginLeft: 14,
-    color: '#999',
-    fontStyle: 'italic',
-    marginTop: 6,
+    color: 'gray',
+    marginBottom: 6,
   },
 });
 

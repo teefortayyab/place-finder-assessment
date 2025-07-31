@@ -16,8 +16,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "io.wildswim.ios",
       "config": {
-        "googleMapsApiKey":  "AIzaSyAcDRhLAxI5fmgvfE9orwf8F7ocmQUPX5E"
-        }
+        "googleMapsApiKey": "MAPS_API_KEY_IOS"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +28,7 @@
       "package": "com.anonymous.placefinderassessment",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDlU77-tFi7P6AEK8M77IkPkiIHh3kGa4U"
+          "apiKey": "MAPS_API_KEY_ANDROID"
         }
       }
     },

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
+import { StyleSheet, Dimensions } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { View, StyleSheet, Dimensions } from 'react-native';
 
 const MapViewComponent = ({ place }) => {
   const mapRef = useRef(null);
@@ -15,7 +15,7 @@ const MapViewComponent = ({ place }) => {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         },
-        1000 // animation duration in ms
+        1000
       );
     }
   }, [place]);
@@ -23,13 +23,13 @@ const MapViewComponent = ({ place }) => {
   return (
     <MapView
       ref={mapRef}
-      style={styles.map}
       provider={PROVIDER_GOOGLE}
+      style={styles.map}
       initialRegion={{
-        latitude: 37.78825, // fallback
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: 3.1491296484790565,
+        longitude: 101.69419647669443,
+        latitudeDelta: 0.1,
+        longitudeDelta: 0.1,
       }}
     >
       {place && (
